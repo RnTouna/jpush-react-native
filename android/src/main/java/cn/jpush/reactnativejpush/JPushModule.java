@@ -684,7 +684,7 @@ public class JPushModule extends ReactContextBaseJavaModule implements Lifecycle
                     + ", tags: " + jPushMessage.getTags();
             Logger.i(TAG, log);
             Logger.toast(context, log);
-            Logger.i(TAG,"tags size:"+jPushMessage.getTags().size());
+//             Logger.i(TAG,"tags size:"+jPushMessage.getTags().size());
             Callback callback = sCacheMap.get(jPushMessage.getSequence());
             if (null != callback) {
                 WritableMap map = Arguments.createMap();
