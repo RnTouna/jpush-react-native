@@ -680,27 +680,31 @@ public class JPushModule extends ReactContextBaseJavaModule implements Lifecycle
 
         @Override
         public void onTagOperatorResult(Context context,JPushMessage jPushMessage) {
-            String log = "action - onTagOperatorResult, sequence:" + jPushMessage.getSequence()
-                    + ", tags: " + jPushMessage.getTags();
-            Logger.i(TAG, log);
-            Logger.toast(context, log);
-//             Logger.i(TAG,"tags size:"+jPushMessage.getTags().size());
-            Callback callback = sCacheMap.get(jPushMessage.getSequence());
-            if (null != callback) {
-                WritableMap map = Arguments.createMap();
-                WritableArray array = Arguments.createArray();
-                Set<String> tags = jPushMessage.getTags();
-                for (String str : tags) {
-                    array.pushString(str);
-                }
-                map.putArray("tags", array);
-                map.putInt("errorCode", jPushMessage.getErrorCode());
-                callback.invoke(map);
-                sCacheMap.remove(jPushMessage.getSequence());
-            } else {
-                Logger.i(TAG, "Unexpected error, null callback!");
-            }
-            super.onTagOperatorResult(context, jPushMessage);
+          try {
+              String log = "action - onTagOperatorResult, sequence:" + jPushMessage.getSequence()
+                      + ", tags: " + jPushMessage.getTags();
+              Logger.i(TAG, log);
+              Logger.toast(context, log);
+  //             Logger.i(TAG,"tags size:"+jPushMessage.getTags().size());
+              Callback callback = sCacheMap.get(jPushMessage.getSequence());
+              if (null != callback && jPushMessage != null && jPushMessage.getTags() != null) {
+                  WritableMap map = Arguments.createMap();
+                  WritableArray array = Arguments.createArray();
+                  Set<String> tags = jPushMessage.getTags();
+                  for (String str : tags) {
+                      array.pushString(str);
+                  }
+                  map.putArray("tags", array);
+                  map.putInt("errorCode", jPushMessage.getErrorCode());
+                  callback.invoke(map);
+                  sCacheMap.remove(jPushMessage.getSequence());
+              } else {
+                  Logger.i(TAG, "Unexpected error, null callback!");
+              }
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+          super.onTagOperatorResult(context, jPushMessage);
         }
         @Override
         public void onCheckTagOperatorResult(Context context,JPushMessage jPushMessage){
